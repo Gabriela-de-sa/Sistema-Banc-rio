@@ -1,0 +1,108 @@
+import math
+class Conta:
+    def __init__(self, numero, titular, saldo, limite):
+        self.__numero = numero
+        self.__titular = titular
+        self.__saldo = saldo
+        self.__limite = limite
+
+    #numero do banco
+    @staticmethod
+    def numero_banco():
+        return {'BB':'001', 'BRADESCO S.A':'237', 'NU PAGAMENTOS S.A':'260', 
+                'CAIXA ECONÔMICA FEDERAL':'104', 'BANCO SANTANDER BRASIL S.A':'033'}
+
+    # extrato de dados da conta
+    def extrato(self):
+        print(f'titular: {self.__titular}, saldo: {self.__saldo}, limite: {self.__limite}')
+
+    #deposita um valor na conta
+    def deposita(self, valor):
+        self.__saldo += valor
+        return self.__saldo
+
+    #verifica se tem limite
+    def __msg(self):
+        print(f'Saque realizado. Saldo: R${self.__saldo} e Limite: R${self.__limite}')
+    
+    #saca um valor da conta - subtrai o valor
+    def saca(self, valor):
+        #saldo suficiente
+        if valor <= self.__saldo:
+            self.__saldo -= valor
+            self.__msg()
+            return self.__saldo
+        
+        #valor insuficiente no saldo, garante que o valor de saldo é positivo e verifica se valor não é menor que saldo e limite
+        elif valor > self.__saldo and self.__saldo > 0 and valor <= (self.__saldo + self.__limite):
+            diferenca = self.__saldo - valor
+            self.__saldo -= valor
+            saldo = math.fabs(self.__saldo)
+            self.__saldo = saldo + (self.__saldo)
+            self.__limite += diferenca
+            self.__msg()
+
+        # saldo negativo mas limite suficiente
+        elif self.__saldo <= 0 and valor <= self.__limite:
+            self.__limite -= valor
+            self.__msg()
+
+        # nem saldo nem limite suficientes
+        else:
+            print("Você não tem limite suficiente!")
+    
+    # transferee um valor para conta de outra pessoa
+    def tranfere(self, valor, destino):
+        self.saca(valor)
+        destino.deposita(valor)
+
+    # retorna o saldo de uma conta - get
+    @property 
+    def saldo(self):
+        return self.__saldo
+
+    #retorna o titular da conta - get
+    @property
+    def titular(self):
+        return self.__titular
+
+    #retorna o limite da conta - get
+    @property
+    def limite(self):
+        return self.__limite
+    
+    # atribui um novo valor ao limite - set
+    @limite.setter
+    def limite(self, limite):
+        self.__limite = limite
+        return self.__limite
+
+
+conta1 = Conta(123, 'gabi', 1000, 1000)
+print(Conta.numero_banco())
+print(conta1.extrato())
+
+conta2 = Conta(321, 'fefe', 2000.0, 1000.0)
+print(conta2.extrato())
+
+#metodo getters e setter
+'''print(conta1.limite)
+conta1.limite = 500
+print(conta1.limite)
+
+print(conta1.saldo)
+print(conta1.titular)'''
+
+print(conta1.saca(1100.0))
+
+'''print(conta1.saca(1400))
+print(conta1.saldo)'''
+
+#conta1.tranfere(200.0, conta2) - metodo get e set
+'''
+print(conta1.extrato())
+print(conta2.extrato())
+
+print(conta1.get_limite())
+conta1.set_limite(2000.0)
+print(conta1.get_limite())'''
